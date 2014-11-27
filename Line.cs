@@ -69,6 +69,11 @@ namespace SheenBidi
 
         #region Constructors
 
+        public Line(Paragraph paragraph)
+            : this(paragraph, 0, paragraph.Text.Length)
+        {
+        }
+
         public Line(Paragraph paragraph, int offset, int length)
         {
             this.text = paragraph.Text;
@@ -79,6 +84,11 @@ namespace SheenBidi
             Array.Copy(paragraph.Levels, offset, levels, 0, length);
 
             Initialize(paragraph.Types, levels, paragraph.BaseLevel);
+        }
+
+        public Line(string text)
+            : this(text, BaseDirection.AutoLeftToRight)
+        {
         }
 
         public Line(string text, BaseDirection direction)
