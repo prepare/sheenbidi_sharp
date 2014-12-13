@@ -30,7 +30,7 @@ namespace SheenBidi
             get { return length; }
         }
 
-        public int Level
+        public byte Level
         {
             get { return level; }
         }
