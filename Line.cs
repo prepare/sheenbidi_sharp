@@ -18,22 +18,19 @@ using SheenBidi.Data;
 
 namespace SheenBidi
 {
-    internal class Run
-    {
-        public int offset;
-        public int length;
-        public byte level;
-
-        public Run(int offset, int length, byte level)
-        {
-            this.offset = offset;
-            this.length = length;
-            this.level = level;
-        }
-    }
-
     public class Line
     {
+        #region Line Run
+
+        internal class Run
+        {
+            public int offset;
+            public int length;
+            public byte level;
+        }
+
+        #endregion
+
         #region Variables
 
         private string _text;
@@ -177,8 +174,10 @@ namespace SheenBidi
 
         private byte DetermineRuns(byte[] levels)
         {
-            Run priorRun = new Run(0, 0, levels[0]);
-            _runs.Clear();
+            Run priorRun = new Run()
+            {
+                level = levels[0]
+            };
             _runs.Add(priorRun);
 
             byte maxLevel = 0;
@@ -197,7 +196,11 @@ namespace SheenBidi
                 {
                     priorRun.length = index - priorRun.offset;
 
-                    Run run = new Run(index, 0, level);
+                    Run run = new Run()
+                    {
+                        offset = index,
+                        level = level
+                    };
                     _runs.Add(run);
 
                     priorRun = run;

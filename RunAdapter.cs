@@ -18,78 +18,53 @@ using System.Collections.Generic;
 
 namespace SheenBidi
 {
-    public class RunAdapter : IEnumerable<RunAgent>
+    public class RunAdapter
     {
         private Line _line;
 
-        private sealed class RunEnumerator : IEnumerator<RunAgent>
+        private RunAgent _agent;
+        private int _index;
+
+        public RunAgent Agent
         {
-            private RunAgent _agent;
-
-            private List<Run> _runs;
-            private int _index;
-
-            internal RunEnumerator(Line line)
-            {
-                _agent = new RunAgent();
-
-                _runs = line.Runs;
-                _index = 0;
-            }
-
-            RunAgent IEnumerator<RunAgent>.Current
-            {
-                get { return _agent; }
-            }
-
-            object IEnumerator.Current
-            {
-                get { return _agent; }
-            }
-
-            bool IEnumerator.MoveNext()
-            {
-                if (_index < _runs.Count)
-                {
-                    Run run = _runs[_index];
-                    _agent.offset = run.offset;
-                    _agent.length = run.length;
-                    _agent.level = run.level;
-                    ++_index;
-
-                    return true;
-                }
-
-                return false;
-            }
-
-            void IEnumerator.Reset()
-            {
-                throw new NotSupportedException();
-            }
-
-            void IDisposable.Dispose()
-            {
-            }
+            get { return _agent; }
         }
 
         public RunAdapter()
         {
+            _agent = new RunAgent();
+            Reset();
         }
 
         public void LoadLine(Line line)
         {
             _line = line;
+            Reset();
         }
 
-        public IEnumerator<RunAgent> GetEnumerator()
+        public bool MoveNext()
         {
-            return (new RunEnumerator(_line));
+            if (_index < _line.Runs.Count)
+            {
+                Line.Run run = _line.Runs[_index];
+                _agent.offset = run.offset;
+                _agent.length = run.length;
+                _agent.level = run.level;
+                ++_index;
+
+                return true;
+            }
+
+            Reset();
+            return false;
         }
 
-        IEnumerator IEnumerable.GetEnumerator()
+        public void Reset()
         {
-            return GetEnumerator();
+            _index = 0;
+            _agent.offset = -1;
+            _agent.length = 0;
+            _agent.level = byte.MaxValue;
         }
     }
 }
