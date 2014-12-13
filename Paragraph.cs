@@ -15,6 +15,7 @@
 using System;
 using SheenBidi.Data;
 using SheenBidi.Collections;
+using SheenBidi.Text;
 
 namespace SheenBidi
 {
@@ -89,12 +90,15 @@ namespace SheenBidi
         private void DetermineTypes(BidiChain chain)
         {
             CharType type = CharType.Nil;
-            int length = _text.Length;
 
-            for (int index = 0; index < length; index++)
+            UnicodeLocator locator = new UnicodeLocator();
+            UnicodeAgent agent = locator.Agent;
+            locator.LoadString(_text);
+
+            while (locator.MoveNext())
             {
                 CharType priorType = type;
-                _types[index] = type = CharTypeLookup.DetermineCharType(_text[index]);
+                _types[agent.index] = type = CharTypeLookup.DetermineCharType(agent.unicode);
 
                 switch (type)
                 {
@@ -108,19 +112,29 @@ namespace SheenBidi
                     case CharType.LRO:
                     case CharType.RLO:
                     case CharType.PDF:
-                        AddConsecutiveLink(chain, type, index);
+                        AddConsecutiveLink(chain, type, agent.index);
                         break;
 
                     default:
-                        if (type != priorType)
+                        if (priorType != type)
                         {
-                            AddConsecutiveLink(chain, type, index);
+                            AddConsecutiveLink(chain, type, agent.index);
                         }
                         break;
                 }
+
+                if (agent.length == 2)
+                {
+                    _types[agent.index + 1] = CharType.BN;
+
+                    if (priorType != CharType.BN)
+                    {
+                        AddConsecutiveLink(chain, CharType.BN, agent.index + 1);
+                    }
+                }
             }
 
-            AddConsecutiveLink(chain, CharType.Nil, length);
+            AddConsecutiveLink(chain, CharType.Nil, _text.Length);
         }
 
         private void AddConsecutiveLink(BidiChain chain, CharType type, int offset)
@@ -241,13 +255,16 @@ namespace SheenBidi
         {
             StatusStack stack = new StatusStack();
             RunQueue runQueue = new RunQueue();
-            IsolatingRun isolatingRun = new IsolatingRun();
-            isolatingRun.Text = _text;
-            isolatingRun.ParagraphLevel = _baseLevel;
+            IsolatingRun isolatingRun = new IsolatingRun()
+            {
+                Text = _text,
+                ParagraphLevel = _baseLevel
+            };
 
             BidiLink roller = chain.RollerLink;
             BidiLink firstLink = null;
             BidiLink lastLink = null;
+
             BidiLink priorLink = roller;
             byte priorLevel = _baseLevel;
 

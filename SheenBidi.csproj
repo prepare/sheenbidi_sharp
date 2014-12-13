@@ -49,6 +49,8 @@
     <Compile Include="Collections\RunQueue.cs" />
     <Compile Include="Collections\StatusStack.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Text\UnicodeAgent.cs" />
+    <Compile Include="Text\UnicodeLocator.cs" />
     <Compile Include="BaseDirection.cs" />
     <Compile Include="Level.cs" />
     <Compile Include="Line.cs" />
