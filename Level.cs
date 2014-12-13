@@ -12,12 +12,29 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace SheenBidi.Internal
+using SheenBidi.Data;
+
+namespace SheenBidi
 {
-    internal enum BracketType : byte
+    internal static class Level
     {
-        None = 0 << 0,
-        Open = 1 << 6,
-        Close = 1 << 7,
+        internal const byte MaxValue = 125;
+        internal const byte MinValue = 0;
+
+        internal static CharType LevelToEmbeddingType(byte level)
+        {
+            if ((level & 1) == 0)
+                return CharType.L;
+
+            return CharType.R;
+        }
+
+        internal static CharType LevelToOppositeType(byte level)
+        {
+            if ((level & 1) == 0)
+                return CharType.R;
+
+            return CharType.L;
+        }
     }
 }

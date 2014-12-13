@@ -13,8 +13,9 @@
 // limitations under the License.
 
 using System;
+using SheenBidi.Data;
 
-namespace SheenBidi.Internal
+namespace SheenBidi.Collections
 {
     internal class StatusStack
     {

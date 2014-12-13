@@ -34,27 +34,27 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Data\BracketType.cs" />
+    <Compile Include="Data\CharType.cs" />
+    <Compile Include="Data\CharTypeData.cs" />
+    <Compile Include="Data\CharTypeLookup.cs" />
+    <Compile Include="Data\PairingData.cs" />
+    <Compile Include="Data\PairingLookup.cs" />
+    <Compile Include="Collections\BidiChain.cs" />
+    <Compile Include="Collections\BidiLink.cs" />
+    <Compile Include="Collections\BracketPair.cs" />
+    <Compile Include="Collections\BracketQueue.cs" />
+    <Compile Include="Collections\IsolatingRun.cs" />
+    <Compile Include="Collections\LevelRun.cs" />
+    <Compile Include="Collections\RunQueue.cs" />
+    <Compile Include="Collections\StatusStack.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="BaseDirection.cs" />
-    <Compile Include="Internal\BracketType.cs" />
-    <Compile Include="Internal\CharType.cs" />
-    <Compile Include="Internal\CharTypeData.cs" />
-    <Compile Include="Internal\BracketPair.cs" />
-    <Compile Include="Internal\BracketQueue.cs" />
-    <Compile Include="Internal\IsolatingRun.cs" />
-    <Compile Include="Internal\LevelRun.cs" />
-    <Compile Include="Internal\BidiChain.cs" />
-    <Compile Include="Internal\BidiLink.cs" />
-    <Compile Include="Internal\RunQueue.cs" />
-    <Compile Include="Internal\StatusStack.cs" />
-    <Compile Include="Internal\CharTypeLookup.cs" />
-    <Compile Include="Internal\PairingData.cs" />
-    <Compile Include="Internal\PairingLookup.cs" />
-    <Compile Include="Internal\Level.cs" />
+    <Compile Include="Level.cs" />
     <Compile Include="Line.cs" />
     <Compile Include="MirrorLocator.cs" />
     <Compile Include="MirrorAgent.cs" />
     <Compile Include="Paragraph.cs" />
-    <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RunAdapter.cs" />
     <Compile Include="RunAgent.cs" />
   </ItemGroup>

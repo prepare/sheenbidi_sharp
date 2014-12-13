@@ -12,34 +12,12 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace SheenBidi.Internal
+namespace SheenBidi.Data
 {
-    internal class BidiChain
+    internal enum BracketType : byte
     {
-        private BidiLink roller;
-        private BidiLink last;
-
-        internal BidiChain()
-        {
-            this.roller = new BidiLink();
-            this.last = this.roller;
-        }
-
-        internal BidiLink RollerLink
-        {
-            get { return roller; }
-        }
-
-        internal BidiLink LastLink
-        {
-            get { return last; }
-        }
-
-        internal void AddLink(BidiLink link)
-        {
-            link.ReplaceNext(roller);
-            last.ReplaceNext(link);
-            last = link;
-        }
+        None = 0 << 0,
+        Open = 1 << 6,
+        Close = 1 << 7,
     }
 }

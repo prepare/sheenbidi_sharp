@@ -12,25 +12,22 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace SheenBidi.Internal
+namespace SheenBidi.Data
 {
-    internal static class Level
+    internal partial class CharTypeLookup
     {
-        internal const byte MaxValue = 125;
-        internal const byte MinValue = 0;
-
-        internal static CharType LevelToEmbeddingType(byte level)
+        internal static CharType DetermineCharType(int unicode)
         {
-            if ((level & 1) == 0)
-                return CharType.L;
-
-            return CharType.R;
-        }
-
-        internal static CharType LevelToOppositeType(byte level)
-        {
-            if ((level & 1) == 0)
-                return CharType.R;
+            if (unicode <= 0x10FFFD)
+            {
+                return (CharType)PrimaryData[
+                                  MainIndexes[
+                                   BranchIndexes[
+                                         unicode / 0x2800
+                                   ] + ((unicode % 0x2800) / 0x100)
+                                  ] + (unicode % 0x100)
+                                 ];
+            }
 
             return CharType.L;
         }

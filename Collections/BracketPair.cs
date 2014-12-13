@@ -12,33 +12,21 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace SheenBidi.Internal
+using SheenBidi.Data;
+
+namespace SheenBidi.Collections
 {
-    internal enum CharType : byte
+    internal class BracketPair
     {
-        Nil = 0,
-        L = 1,
-        R = 2,
-        AL = 3,
-        EN = 4,
-        ES = 10,
-        ET = 6,
-        AN = 5,
-        CS = 9,
-        NSM = 7,
-        BN = 8,
-        B = 11,
-        S = 12,
-        WS = 14,
-        ON = 13,
-        LRE = 19,
-        RLE = 20,
-        LRO = 21,
-        RLO = 22,
-        PDF = 23,
-        LRI = 15,
-        RLI = 16,
-        FSI = 17,
-        PDI = 18,
+        internal int bracket;
+        internal CharType strongType;
+        internal BidiLink priorStrongLink;
+        internal BidiLink openingLink;
+        internal BidiLink closingLink;
+
+        internal bool IsComplete
+        {
+            get { return (closingLink != null); }
+        }
     }
 }

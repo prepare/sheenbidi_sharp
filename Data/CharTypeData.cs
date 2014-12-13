@@ -12,7 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace SheenBidi.Internal
+namespace SheenBidi.Data
 {
     internal partial class CharTypeLookup
     {

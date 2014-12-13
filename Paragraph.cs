@@ -13,7 +13,8 @@
 // limitations under the License.
 
 using System;
-using SheenBidi.Internal;
+using SheenBidi.Data;
+using SheenBidi.Collections;
 
 namespace SheenBidi
 {

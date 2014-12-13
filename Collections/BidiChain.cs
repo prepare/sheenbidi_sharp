@@ -12,24 +12,34 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-namespace SheenBidi.Internal
+namespace SheenBidi.Collections
 {
-    internal partial class CharTypeLookup
+    internal class BidiChain
     {
-        internal static CharType DetermineCharType(int unicode)
-        {
-            if (unicode <= 0x10FFFD)
-            {
-                return (CharType)PrimaryData[
-                                  MainIndexes[
-                                   BranchIndexes[
-                                         unicode / 0x2800
-                                   ] + ((unicode % 0x2800) / 0x100)
-                                  ] + (unicode % 0x100)
-                                 ];
-            }
+        private BidiLink roller;
+        private BidiLink last;
 
-            return CharType.L;
+        internal BidiChain()
+        {
+            this.roller = new BidiLink();
+            this.last = this.roller;
+        }
+
+        internal BidiLink RollerLink
+        {
+            get { return roller; }
+        }
+
+        internal BidiLink LastLink
+        {
+            get { return last; }
+        }
+
+        internal void AddLink(BidiLink link)
+        {
+            link.ReplaceNext(roller);
+            last.ReplaceNext(link);
+            last = link;
         }
     }
 }
