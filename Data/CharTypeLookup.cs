@@ -16,7 +16,7 @@ namespace SheenBidi.Data
 {
     internal partial class CharTypeLookup
     {
-        internal static CharType DetermineCharType(int unicode)
+        public static CharType DetermineCharType(int unicode)
         {
             if (unicode <= 0x10FFFD)
             {

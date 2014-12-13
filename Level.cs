@@ -18,10 +18,10 @@ namespace SheenBidi
 {
     internal static class Level
     {
-        internal const byte MaxValue = 125;
-        internal const byte MinValue = 0;
+        public const byte MaxValue = 125;
+        public const byte MinValue = 0;
 
-        internal static CharType LevelToEmbeddingType(byte level)
+        public static CharType LevelToEmbeddingType(byte level)
         {
             if ((level & 1) == 0)
                 return CharType.L;
@@ -29,7 +29,7 @@ namespace SheenBidi
             return CharType.R;
         }
 
-        internal static CharType LevelToOppositeType(byte level)
+        public static CharType LevelToOppositeType(byte level)
         {
             if ((level & 1) == 0)
                 return CharType.R;

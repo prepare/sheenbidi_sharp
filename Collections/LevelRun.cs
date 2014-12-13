@@ -37,14 +37,14 @@ namespace SheenBidi.Collections
             EOR_R = 8,
         }
 
-        internal readonly BidiLink firstLink;
-        internal readonly BidiLink lastLink;
-        internal readonly BidiLink subsequentLink;
+        public readonly BidiLink firstLink;
+        public readonly BidiLink lastLink;
+        public readonly BidiLink subsequentLink;
         private Extrema _extrema;
         private Kind _kind;
         private LevelRun _next;
 
-        internal CharType SOR
+        public CharType SOR
         {
             get
             {
@@ -55,7 +55,7 @@ namespace SheenBidi.Collections
             }
         }
 
-        internal CharType EOR
+        public CharType EOR
         {
             get
             {
@@ -66,42 +66,42 @@ namespace SheenBidi.Collections
             }
         }
 
-        internal byte Level
+        public byte Level
         {
             get { return firstLink.level; }
         }
 
-        internal LevelRun Next
+        public LevelRun Next
         {
             get { return _next; }
         }
 
-        internal bool IsSimple
+        public bool IsSimple
         {
             get { return (_kind == Kind.Simple); }
         }
 
-        internal bool IsIsolateInitiator
+        public bool IsIsolateInitiator
         {
             get { return ((_kind & Kind.Isolate) != 0); }
         }
 
-        internal bool IsIsolateTerminator
+        public bool IsIsolateTerminator
         {
             get { return ((_kind & Kind.Terminating) != 0); }
         }
 
-        internal bool IsPartialIsolate
+        public bool IsPartialIsolate
         {
             get { return ((_kind & Kind.Partial) != 0); }
         }
 
-        internal bool IsAttachedTerminator
+        public bool IsAttachedTerminator
         {
             get { return ((_kind & Kind.Attached) != 0); }
         }
 
-        internal LevelRun(BidiLink firstLink, BidiLink lastLink, CharType sor, CharType eor)
+        public LevelRun(BidiLink firstLink, BidiLink lastLink, CharType sor, CharType eor)
         {
             this.firstLink = firstLink;
             this.lastLink = lastLink;
@@ -155,7 +155,7 @@ namespace SheenBidi.Collections
             this.subsequentLink = lastLink.Next;
         }
 
-        internal void AttachLevelRun(LevelRun levelRun)
+        public void AttachLevelRun(LevelRun levelRun)
         {
 #if DEBUG
             if (this.Level != levelRun.Level)

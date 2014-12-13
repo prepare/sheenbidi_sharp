@@ -21,13 +21,13 @@ namespace SheenBidi.Collections
     {
         private class List
         {
-            internal const int Length = 8;
-            internal const int MaxIndex = (Length - 1);
+            public const int Length = 8;
+            public const int MaxIndex = (Length - 1);
 
-            internal readonly BracketPair[] bracketPairs = new BracketPair[Length];
+            public readonly BracketPair[] bracketPairs = new BracketPair[Length];
 
-            internal List previous;
-            internal List next;
+            public List previous;
+            public List next;
         }
 
         private List _frontList;
@@ -40,27 +40,27 @@ namespace SheenBidi.Collections
         private bool _shouldDequeue;
         private int _size;
 
-        internal BracketQueue(CharType direction)
+        public BracketQueue(CharType direction)
         {
             Clear(direction);
         }
 
-        internal int Count
+        public int Count
         {
             get { return _size; }
         }
 
-        internal bool IsEmpty
+        public bool IsEmpty
         {
             get { return (_size == 0); }
         }
 
-        internal bool ShouldDequeue
+        public bool ShouldDequeue
         {
             get { return _shouldDequeue; }
         }
 
-        internal void Clear(CharType direction)
+        public void Clear(CharType direction)
         {
             _frontList = new List();
             _frontTop = 0;
@@ -73,7 +73,7 @@ namespace SheenBidi.Collections
             _size = 0;
         }
 
-        internal void Enqueue(BracketPair bracketPair)
+        public void Enqueue(BracketPair bracketPair)
         {
             if (_rearTop == List.MaxIndex)
             {
@@ -99,7 +99,7 @@ namespace SheenBidi.Collections
             ++_size;
         }
 
-        internal void Dequeue()
+        public void Dequeue()
         {
 #if DEBUG
             if (this.IsEmpty)
@@ -123,12 +123,12 @@ namespace SheenBidi.Collections
             --_size;
         }
 
-        internal BracketPair Peek()
+        public BracketPair Peek()
         {
             return _frontList.bracketPairs[_frontTop];
         }
 
-        internal void SetStrongType(CharType strongType)
+        public void SetStrongType(CharType strongType)
         {
             List list = _rearList;
             int top = _rearTop;
@@ -154,7 +154,7 @@ namespace SheenBidi.Collections
             };
         }
 
-        internal void ClosePair(BidiLink closingLink, char bracket)
+        public void ClosePair(BidiLink closingLink, char bracket)
         {
             List list = _rearList;
             int top = _rearTop;

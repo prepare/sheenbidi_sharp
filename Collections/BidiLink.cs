@@ -18,23 +18,23 @@ namespace SheenBidi.Collections
 {
     internal class BidiLink
     {
-        internal int offset;
-        internal int length;
-        internal CharType type;
-        internal byte level;
+        public int offset;
+        public int length;
+        public CharType type;
+        public byte level;
         private BidiLink _next;
 
-        internal BidiLink Next
+        public BidiLink Next
         {
             get { return _next; }
         }
 
-        internal void AbandonNext()
+        public void AbandonNext()
         {
             _next = _next._next;
         }
 
-        internal void MergeNext()
+        public void MergeNext()
         {
             BidiLink firstNext = _next;
             BidiLink secondNext = firstNext._next;
@@ -42,7 +42,7 @@ namespace SheenBidi.Collections
             length += firstNext.length;
         }
 
-        internal void ReplaceNext(BidiLink next)
+        public void ReplaceNext(BidiLink next)
         {
             _next = next;
         }

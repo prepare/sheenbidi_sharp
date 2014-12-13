@@ -20,11 +20,11 @@ namespace SheenBidi
 {
     internal class Run
     {
-        internal int offset;
-        internal int length;
-        internal byte level;
+        public int offset;
+        public int length;
+        public byte level;
 
-        internal Run(int offset, int length, byte level)
+        public Run(int offset, int length, byte level)
         {
             this.offset = offset;
             this.length = length;

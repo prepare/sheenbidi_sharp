@@ -32,31 +32,31 @@ namespace SheenBidi.Collections
         private string _text;
         private byte _paragraphLevel;
 
-        internal string Text
+        public string Text
         {
             get { return _text; }
             set { _text = value; }
         }
 
-        internal byte ParagraphLevel
+        public byte ParagraphLevel
         {
             get { return _paragraphLevel; }
             set { _paragraphLevel = value; }
         }
 
-        internal LevelRun BaseLevelRun
+        public LevelRun BaseLevelRun
         {
             get { return _baseLevelRun; }
             set { _baseLevelRun = value; }
         }
 
-        internal IsolatingRun()
+        public IsolatingRun()
         {
             _bracketQueue = new BracketQueue(CharType.L);
             _roller = new BidiLink();
         }
 
-        internal void Resolve()
+        public void Resolve()
         {
             // Attach level run links to form isolating run.
             AttachLevelRunLinks();

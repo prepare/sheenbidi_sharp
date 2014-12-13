@@ -18,13 +18,13 @@ namespace SheenBidi.Collections
 {
     internal class BracketPair
     {
-        internal int bracket;
-        internal CharType strongType;
-        internal BidiLink priorStrongLink;
-        internal BidiLink openingLink;
-        internal BidiLink closingLink;
+        public int bracket;
+        public CharType strongType;
+        public BidiLink priorStrongLink;
+        public BidiLink openingLink;
+        public BidiLink closingLink;
 
-        internal bool IsComplete
+        public bool IsComplete
         {
             get { return (closingLink != null); }
         }

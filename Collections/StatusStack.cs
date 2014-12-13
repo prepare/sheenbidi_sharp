@@ -21,15 +21,15 @@ namespace SheenBidi.Collections
     {
         private class List
         {
-            internal const int Length = 16;
-            internal const int MaxIndex = (Length - 1);
+            public const int Length = 16;
+            public const int MaxIndex = (Length - 1);
 
-            internal byte[] embeddingLevel = new byte[Length];
-            internal CharType[] overrideStatus = new CharType[Length];
-            internal bool[] isolateStatus = new bool[Length];
+            public byte[] embeddingLevel = new byte[Length];
+            public CharType[] overrideStatus = new CharType[Length];
+            public bool[] isolateStatus = new bool[Length];
 
-            internal List previous;
-            internal List next;
+            public List previous;
+            public List next;
         }
 
         private const int MaxElements = Level.MaxValue + 2;
@@ -39,59 +39,59 @@ namespace SheenBidi.Collections
         private int _peekTop;
         private int _size;
 
-        internal StatusStack()
+        public StatusStack()
         {
             Reset();
         }
 
-        internal void Reset()
+        public void Reset()
         {
             _peekList = _firstList;
             _peekTop = 0;
             _size = 0;
         }
 
-        internal int Count
+        public int Count
         {
             get { return _size; }
         }
 
-        internal bool IsEmpty
+        public bool IsEmpty
         {
             get { return (_size == 0); }
         }
 
-        internal byte EmbeddingLevel
+        public byte EmbeddingLevel
         {
             get { return _peekList.embeddingLevel[_peekTop]; }
         }
 
-        internal CharType OverrideStatus
+        public CharType OverrideStatus
         {
             get { return _peekList.overrideStatus[_peekTop]; }
         }
 
-        internal bool IsolateStatus
+        public bool IsolateStatus
         {
             get { return _peekList.isolateStatus[_peekTop]; }
         }
 
-        internal byte EvenLevel
+        public byte EvenLevel
         {
             get { return (byte)((EmbeddingLevel + 2) & ~1); }
         }
 
-        internal byte OddLevel
+        public byte OddLevel
         {
             get { return (byte)((EmbeddingLevel + 1) | 1); }
         }
 
-        internal void Clear()
+        public void Clear()
         {
             _size = 0;
         }
 
-        internal void Push(byte embeddingLevel, CharType overrideStatus, bool isolateStatus)
+        public void Push(byte embeddingLevel, CharType overrideStatus, bool isolateStatus)
         {
 #if DEBUG
             if (_size == MaxElements)
@@ -127,7 +127,7 @@ namespace SheenBidi.Collections
             _peekList.isolateStatus[_peekTop] = isolateStatus;
         }
 
-        internal void Pop()
+        public void Pop()
         {
 #if DEBUG
             if (_size == 0)

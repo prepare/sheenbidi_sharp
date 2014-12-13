@@ -18,13 +18,13 @@ namespace SheenBidi.Collections
     {
         private class List
         {
-            internal const int Length = 8;
-            internal const int MaxIndex = (Length - 1);
+            public const int Length = 8;
+            public const int MaxIndex = (Length - 1);
 
-            internal readonly LevelRun[] levelRuns = new LevelRun[Length];
+            public readonly LevelRun[] levelRuns = new LevelRun[Length];
 
-            internal List previous;
-            internal List next;
+            public List previous;
+            public List next;
         }
 
         private List _frontList;
@@ -38,7 +38,7 @@ namespace SheenBidi.Collections
 
         private int _size;
 
-        internal RunQueue()
+        public RunQueue()
         {
             _frontList = new List();
             _frontTop = 0;
@@ -52,22 +52,22 @@ namespace SheenBidi.Collections
             _size = 0;
         }
 
-        internal bool IsEmpty
+        public bool IsEmpty
         {
             get { return (_size == 0); }
         }
 
-        internal int Count
+        public int Count
         {
             get { return _size; }
         }
 
-        internal bool ShouldDequeue
+        public bool ShouldDequeue
         {
             get { return (_isolatingTop == -1); }
         }
 
-        internal void Enqueue(LevelRun levelRun)
+        public void Enqueue(LevelRun levelRun)
         {
             if (_rearTop == List.MaxIndex)
             {
@@ -108,7 +108,7 @@ namespace SheenBidi.Collections
             }
         }
 
-        internal void Dequeue()
+        public void Dequeue()
         {
             if (_frontTop == List.MaxIndex)
             {
@@ -127,7 +127,7 @@ namespace SheenBidi.Collections
             --_size;
         }
 
-        internal LevelRun Peek()
+        public LevelRun Peek()
         {
             return _frontList.levelRuns[_frontTop];
         }

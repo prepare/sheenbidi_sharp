@@ -19,7 +19,7 @@ namespace SheenBidi.Data
         private const byte PrimaryMask = (byte)(BracketType.Open | BracketType.Close);
         private const byte InverseMask = unchecked((byte)(~PrimaryMask));
 
-        internal static int DetermineMirror(int unicode)
+        public static int DetermineMirror(int unicode)
         {
             if (unicode >= 40 && unicode <= 0xFF63)
             {
@@ -39,7 +39,7 @@ namespace SheenBidi.Data
             return 0;
         }
 
-        internal static int DetermineBracketPair(int unicode, out BracketType type)
+        public static int DetermineBracketPair(int unicode, out BracketType type)
         {
             if (unicode >= 40 && unicode <= 0xFF63)
             {

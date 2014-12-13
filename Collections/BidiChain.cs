@@ -19,23 +19,23 @@ namespace SheenBidi.Collections
         private BidiLink _roller;
         private BidiLink _last;
 
-        internal BidiChain()
+        public BidiChain()
         {
             _roller = new BidiLink();
             _last = _roller;
         }
 
-        internal BidiLink RollerLink
+        public BidiLink RollerLink
         {
             get { return _roller; }
         }
 
-        internal BidiLink LastLink
+        public BidiLink LastLink
         {
             get { return _last; }
         }
 
-        internal void AddLink(BidiLink link)
+        public void AddLink(BidiLink link)
         {
             link.ReplaceNext(_roller);
             _last.ReplaceNext(link);
