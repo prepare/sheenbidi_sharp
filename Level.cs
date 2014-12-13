@@ -12,6 +12,7 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using System;
 using SheenBidi.Data;
 
 namespace SheenBidi
@@ -21,7 +22,7 @@ namespace SheenBidi
         public const byte MaxValue = 125;
         public const byte MinValue = 0;
 
-        public static CharType LevelToEmbeddingType(byte level)
+        public static CharType MakeEmbeddingType(byte level)
         {
             if ((level & 1) == 0)
                 return CharType.L;
@@ -29,12 +30,17 @@ namespace SheenBidi
             return CharType.R;
         }
 
-        public static CharType LevelToOppositeType(byte level)
+        public static CharType MakeOppositeType(byte level)
         {
             if ((level & 1) == 0)
                 return CharType.R;
 
             return CharType.L;
+        }
+
+        public static CharType MakeExtremeType(byte firstLevel, byte secondLevel)
+        {
+            return MakeEmbeddingType(Math.Max(firstLevel, secondLevel));
         }
     }
 }

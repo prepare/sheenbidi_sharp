@@ -94,16 +94,10 @@ namespace SheenBidi.Collections
             _lastLevelRun = current;
             _level = _baseLevelRun.Level;
             _sos = _baseLevelRun.SOR;
-
-            if (!_baseLevelRun.IsPartialIsolate)
-            {
-                _eos = current.EOR;
-            }
-            else
-            {
-                byte eosLevel = Math.Max(_level, _paragraphLevel);
-                _eos = Level.LevelToEmbeddingType(eosLevel);
-            }
+            _eos = (!_baseLevelRun.IsPartialIsolate
+                    ? current.EOR
+                    : Level.MakeExtremeType(_paragraphLevel, _level)
+                   );
         }
 
         private void AttachOriginalLinks()
@@ -270,7 +264,7 @@ namespace SheenBidi.Collections
         private void ResolveBrackets()
         {
             BidiLink priorStrongLink = null;
-            _bracketQueue.Clear(Level.LevelToEmbeddingType(_level));
+            _bracketQueue.Clear(Level.MakeEmbeddingType(_level));
 
             for (BidiLink link = _roller.Next; link != _roller; link = link.Next)
             {
@@ -330,8 +324,8 @@ namespace SheenBidi.Collections
 
         private void ResolveAvailableBracketPairs()
         {
-            CharType embeddingDirection = Level.LevelToEmbeddingType(_level);
-            CharType oppositeDirection = Level.LevelToOppositeType(_level);
+            CharType embeddingDirection = Level.MakeEmbeddingType(_level);
+            CharType oppositeDirection = Level.MakeOppositeType(_level);
 
             while (!_bracketQueue.IsEmpty)
             {
@@ -467,7 +461,7 @@ namespace SheenBidi.Collections
                             // Rules N1, N2
                             CharType resolvedType = (strongType == nextType
                                                      ? strongType
-                                                     : Level.LevelToEmbeddingType(_level)
+                                                     : Level.MakeEmbeddingType(_level)
                                                     );
 
                             do

@@ -410,7 +410,7 @@ namespace SheenBidi
 
                 if (sor == CharType.Nil)
                 {
-                    sor = Level.LevelToEmbeddingType(Math.Max(_baseLevel, link.level));
+                    sor = Level.MakeExtremeType(_baseLevel, link.level);
                     firstLink = link;
                     priorLevel = link.level;
                 }
@@ -428,7 +428,7 @@ namespace SheenBidi
                     // So, identify eos of the current run.
                     // Note:
                     //     sor of the run has already been determined at this stage.
-                    eor = Level.LevelToEmbeddingType(Math.Max(priorLevel, currentLevel));
+                    eor = Level.MakeExtremeType(priorLevel, currentLevel);
 
                     runQueue.Enqueue(new LevelRun(firstLink, lastLink, sor, eor));
                     if (runQueue.ShouldDequeue || forceFinish)
