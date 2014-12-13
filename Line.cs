@@ -36,10 +36,10 @@ namespace SheenBidi
     {
         #region Variables
 
-        private string text;
-        private int offset;
-        private int length;
-        private List<Run> runs = new List<Run>();
+        private string _text;
+        private int _offset;
+        private int _length;
+        private List<Run> _runs = new List<Run>();
 
         #endregion Variables
 
@@ -47,22 +47,22 @@ namespace SheenBidi
 
         public string Text
         {
-            get { return text; }
+            get { return _text; }
         }
 
         public int Offset
         {
-            get { return offset; }
+            get { return _offset; }
         }
 
         public int Length
         {
-            get { return length; }
+            get { return _length; }
         }
 
         internal List<Run> Runs
         {
-            get { return runs; }
+            get { return _runs; }
         }
 
         #endregion Properties
@@ -76,9 +76,9 @@ namespace SheenBidi
 
         public Line(Paragraph paragraph, int offset, int length)
         {
-            this.text = paragraph.Text;
-            this.offset = offset;
-            this.length = length;
+            _text = paragraph.Text;
+            _offset = offset;
+            _length = length;
 
             byte[] levels = new byte[length];
             Array.Copy(paragraph.Levels, offset, levels, 0, length);
@@ -96,9 +96,9 @@ namespace SheenBidi
             if (string.IsNullOrEmpty(text))
                 throw (new ArgumentException("Text is empty."));
 
-            this.text = text;
-            this.offset = 0;
-            this.length = text.Length;
+            _text = text;
+            _offset = 0;
+            _length = text.Length;
 
             Paragraph paragraph = new Paragraph(text, direction);
             Initialize(paragraph.Types, paragraph.Levels, paragraph.BaseLevel);
@@ -120,9 +120,9 @@ namespace SheenBidi
             bool reset = true;
             int resetLength = 0;
 
-            for (int index = length - 1; index >= 0; index--)
+            for (int index = _length - 1; index >= 0; index--)
             {
-                CharType type = types[index + offset];
+                CharType type = types[index + _offset];
 
                 switch (type)
                 {
@@ -178,8 +178,8 @@ namespace SheenBidi
         private byte DetermineRuns(byte[] levels)
         {
             Run priorRun = new Run(0, 0, levels[0]);
-            runs.Clear();
-            runs.Add(priorRun);
+            _runs.Clear();
+            _runs.Add(priorRun);
 
             byte maxLevel = 0;
             int length = levels.Length;
@@ -198,7 +198,7 @@ namespace SheenBidi
                     priorRun.length = index - priorRun.offset;
 
                     Run run = new Run(index, 0, level);
-                    runs.Add(run);
+                    _runs.Add(run);
 
                     priorRun = run;
                 }
@@ -217,13 +217,13 @@ namespace SheenBidi
         {
             for (int newLevel = maxLevel; newLevel > 0; newLevel--)
             {
-                for (int index = runs.Count - 1; index >= 0; index--)
+                for (int index = _runs.Count - 1; index >= 0; index--)
                 {
-                    if (runs[index].level >= newLevel)
+                    if (_runs[index].level >= newLevel)
                     {
                         int reverseCount = 1;
 
-                        for (; index > 0 && runs[index - 1].level >= newLevel; --index)
+                        for (; index > 0 && _runs[index - 1].level >= newLevel; --index)
                         {
                             ++reverseCount;
                         }
@@ -244,9 +244,9 @@ namespace SheenBidi
                 int newIndex = index + i;
                 int tieIndex = finalIndex - i;
 
-                Run tempRun = runs[newIndex];
-                runs[newIndex] = runs[tieIndex];
-                runs[tieIndex] = tempRun;
+                Run tempRun = _runs[newIndex];
+                _runs[newIndex] = _runs[tieIndex];
+                _runs[tieIndex] = tempRun;
             }
         }
 

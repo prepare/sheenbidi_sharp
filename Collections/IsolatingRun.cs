@@ -19,41 +19,41 @@ namespace SheenBidi.Collections
 {
     internal class IsolatingRun
     {
-        private BracketQueue bracketQueue;
+        private BracketQueue _bracketQueue;
 
-        private BidiLink roller;
-        private LevelRun baseLevelRun;
-        private LevelRun lastLevelRun;
+        private BidiLink _roller;
+        private LevelRun _baseLevelRun;
+        private LevelRun _lastLevelRun;
 
-        private CharType sos;
-        private CharType eos;
-        private byte level;
+        private CharType _sos;
+        private CharType _eos;
+        private byte _level;
 
-        private string text;
-        private byte paragraphLevel;
+        private string _text;
+        private byte _paragraphLevel;
 
         internal string Text
         {
-            get { return text; }
-            set { text = value; }
+            get { return _text; }
+            set { _text = value; }
         }
 
         internal byte ParagraphLevel
         {
-            get { return paragraphLevel; }
-            set { paragraphLevel = value; }
+            get { return _paragraphLevel; }
+            set { _paragraphLevel = value; }
         }
 
         internal LevelRun BaseLevelRun
         {
-            get { return baseLevelRun; }
-            set { baseLevelRun = value; }
+            get { return _baseLevelRun; }
+            set { _baseLevelRun = value; }
         }
 
         internal IsolatingRun()
         {
-            bracketQueue = new BracketQueue(CharType.L);
-            roller = new BidiLink();
+            _bracketQueue = new BracketQueue(CharType.L);
+            _roller = new BidiLink();
         }
 
         internal void Resolve()
@@ -61,7 +61,7 @@ namespace SheenBidi.Collections
             // Attach level run links to form isolating run.
             AttachLevelRunLinks();
             // Save last subsequent link.
-            BidiLink subsequentLink = lastLevelRun.subsequentLink;
+            BidiLink subsequentLink = _lastLevelRun.subsequentLink;
 
             // Rules W1-W7
             BidiLink finalLink = ResolveWeakTypes();
@@ -83,32 +83,32 @@ namespace SheenBidi.Collections
             LevelRun current;
             LevelRun next;
 
-            roller.ReplaceNext(baseLevelRun.firstLink);
+            _roller.ReplaceNext(_baseLevelRun.firstLink);
 
-            for (current = baseLevelRun; (next = current.Next) != null; current = next)
+            for (current = _baseLevelRun; (next = current.Next) != null; current = next)
             {
                 current.lastLink.ReplaceNext(next.firstLink);
             }
-            current.lastLink.ReplaceNext(roller);
+            current.lastLink.ReplaceNext(_roller);
 
-            lastLevelRun = current;
-            level = baseLevelRun.Level;
-            sos = baseLevelRun.SOR;
+            _lastLevelRun = current;
+            _level = _baseLevelRun.Level;
+            _sos = _baseLevelRun.SOR;
 
-            if (!baseLevelRun.IsPartialIsolate)
+            if (!_baseLevelRun.IsPartialIsolate)
             {
-                eos = current.EOR;
+                _eos = current.EOR;
             }
             else
             {
-                byte eosLevel = Math.Max(level, paragraphLevel);
-                eos = Level.LevelToEmbeddingType(eosLevel);
+                byte eosLevel = Math.Max(_level, _paragraphLevel);
+                _eos = Level.LevelToEmbeddingType(eosLevel);
             }
         }
 
         private void AttachOriginalLinks()
         {
-            for (LevelRun current = baseLevelRun; current != null; current = current.Next)
+            for (LevelRun current = _baseLevelRun; current != null; current = current.Next)
             {
                 current.lastLink.ReplaceNext(current.subsequentLink);
             };
@@ -118,12 +118,12 @@ namespace SheenBidi.Collections
 
         private BidiLink ResolveWeakTypes()
         {
-            BidiLink priorLink = roller;
+            BidiLink priorLink = _roller;
 
-            CharType w1PriorType = sos;
-            CharType w2StrongType = sos;
+            CharType w1PriorType = _sos;
+            CharType w2StrongType = _sos;
 
-            for (BidiLink link = roller.Next; link != roller; link = link.Next)
+            for (BidiLink link = _roller.Next; link != _roller; link = link.Next)
             {
                 CharType type = link.type;
 
@@ -183,12 +183,12 @@ namespace SheenBidi.Collections
                 }
             }
 
-            priorLink = roller;
-            CharType w4PriorType = sos;
-            CharType w5PriorType = sos;
-            CharType w7StrongType = sos;
+            priorLink = _roller;
+            CharType w4PriorType = _sos;
+            CharType w5PriorType = _sos;
+            CharType w7StrongType = _sos;
 
-            for (BidiLink link = roller.Next; link != roller; link = link.Next)
+            for (BidiLink link = _roller.Next; link != _roller; link = link.Next)
             {
                 CharType type = link.type;
                 CharType nextType = link.Next.type;
@@ -270,9 +270,9 @@ namespace SheenBidi.Collections
         private void ResolveBrackets()
         {
             BidiLink priorStrongLink = null;
-            bracketQueue.Clear(Level.LevelToEmbeddingType(level));
+            _bracketQueue.Clear(Level.LevelToEmbeddingType(_level));
 
-            for (BidiLink link = roller.Next; link != roller; link = link.Next)
+            for (BidiLink link = _roller.Next; link != _roller; link = link.Next)
             {
                 CharType type = link.type;
 
@@ -281,7 +281,7 @@ namespace SheenBidi.Collections
                     case CharType.ON:
                         BracketType bracketType;
 
-                        char ch = text[link.offset];
+                        char ch = _text[link.offset];
                         char bracketValue = (char)PairingLookup.DetermineBracketPair((int)ch, out bracketType);
 
                         switch (bracketType)
@@ -293,15 +293,15 @@ namespace SheenBidi.Collections
                                     openingLink = link,
                                     bracket = ch
                                 };
-                                bracketQueue.Enqueue(bracketPair);
+                                _bracketQueue.Enqueue(bracketPair);
                                 break;
 
                             case BracketType.Close:
-                                if (!bracketQueue.IsEmpty)
+                                if (!_bracketQueue.IsEmpty)
                                 {
-                                    bracketQueue.ClosePair(link, bracketValue);
+                                    _bracketQueue.ClosePair(link, bracketValue);
 
-                                    if (bracketQueue.ShouldDequeue)
+                                    if (_bracketQueue.ShouldDequeue)
                                         ResolveAvailableBracketPairs();
                                 }
                                 break;
@@ -313,12 +313,12 @@ namespace SheenBidi.Collections
                     case CharType.AL:
                     case CharType.EN:
                     case CharType.AN:
-                        if (!bracketQueue.IsEmpty)
+                        if (!_bracketQueue.IsEmpty)
                         {
                             if (type == CharType.EN || type == CharType.AN)
                                 type = CharType.R;
 
-                            bracketQueue.SetStrongType(type);
+                            _bracketQueue.SetStrongType(type);
                         }
                         priorStrongLink = link;
                         break;
@@ -330,12 +330,12 @@ namespace SheenBidi.Collections
 
         private void ResolveAvailableBracketPairs()
         {
-            CharType embeddingDirection = Level.LevelToEmbeddingType(level);
-            CharType oppositeDirection = Level.LevelToOppositeType(level);
+            CharType embeddingDirection = Level.LevelToEmbeddingType(_level);
+            CharType oppositeDirection = Level.LevelToOppositeType(_level);
 
-            while (!bracketQueue.IsEmpty)
+            while (!_bracketQueue.IsEmpty)
             {
-                BracketPair pair = bracketQueue.Peek();
+                BracketPair pair = _bracketQueue.Peek();
 
                 if (pair.IsComplete)
                 {
@@ -375,7 +375,7 @@ namespace SheenBidi.Collections
                         }
                         else
                         {
-                            priorStrongType = sos;
+                            priorStrongType = _sos;
                         }
 
                         // Rule: N0.c.1
@@ -403,7 +403,7 @@ namespace SheenBidi.Collections
                     }
                 }
 
-                bracketQueue.Dequeue();
+                _bracketQueue.Dequeue();
             }
         }
 
@@ -413,10 +413,10 @@ namespace SheenBidi.Collections
 
         private void ResolveNeutrals()
         {
-            CharType strongType = sos;
+            CharType strongType = _sos;
             BidiLink neutralLink = null;
 
-            for (BidiLink link = roller.Next; link != roller; link = link.Next)
+            for (BidiLink link = _roller.Next; link != _roller; link = link.Next)
             {
                 CharType type = link.type;
 
@@ -453,7 +453,7 @@ namespace SheenBidi.Collections
                         switch (nextType)
                         {
                             case CharType.Nil:
-                                nextType = eos;
+                                nextType = _eos;
                                 break;
 
                             case CharType.EN:
@@ -467,7 +467,7 @@ namespace SheenBidi.Collections
                             // Rules N1, N2
                             CharType resolvedType = (strongType == nextType
                                                      ? strongType
-                                                     : Level.LevelToEmbeddingType(level)
+                                                     : Level.LevelToEmbeddingType(_level)
                                                     );
 
                             do
@@ -512,9 +512,9 @@ namespace SheenBidi.Collections
 
         private void ResolveImplicitLevels()
         {
-            if ((level & 1) == 0)
+            if ((_level & 1) == 0)
             {
-                for (BidiLink link = roller.Next; link != roller; link = link.Next)
+                for (BidiLink link = _roller.Next; link != _roller; link = link.Next)
                 {
                     CharType type = link.type;
 
@@ -535,7 +535,7 @@ namespace SheenBidi.Collections
             }
             else
             {
-                for (BidiLink link = roller.Next; link != roller; link = link.Next)
+                for (BidiLink link = _roller.Next; link != _roller; link = link.Next)
                 {
                     CharType type = link.type;
 

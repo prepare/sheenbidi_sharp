@@ -34,10 +34,10 @@ namespace SheenBidi.Collections
 
         private const int MaxElements = Level.MaxValue + 2;
 
-        private readonly List firstList = new List();
-        private List peekList;
-        private int peekTop;
-        private int size;
+        private readonly List _firstList = new List();
+        private List _peekList;
+        private int _peekTop;
+        private int _size;
 
         internal StatusStack()
         {
@@ -46,34 +46,34 @@ namespace SheenBidi.Collections
 
         internal void Reset()
         {
-            peekList = firstList;
-            peekTop = 0;
-            size = 0;
+            _peekList = _firstList;
+            _peekTop = 0;
+            _size = 0;
         }
 
         internal int Count
         {
-            get { return size; }
+            get { return _size; }
         }
 
         internal bool IsEmpty
         {
-            get { return (size == 0); }
+            get { return (_size == 0); }
         }
 
         internal byte EmbeddingLevel
         {
-            get { return peekList.embeddingLevel[peekTop]; }
+            get { return _peekList.embeddingLevel[_peekTop]; }
         }
 
         internal CharType OverrideStatus
         {
-            get { return peekList.overrideStatus[peekTop]; }
+            get { return _peekList.overrideStatus[_peekTop]; }
         }
 
         internal bool IsolateStatus
         {
-            get { return peekList.isolateStatus[peekTop]; }
+            get { return _peekList.isolateStatus[_peekTop]; }
         }
 
         internal byte EvenLevel
@@ -88,62 +88,62 @@ namespace SheenBidi.Collections
 
         internal void Clear()
         {
-            size = 0;
+            _size = 0;
         }
 
         internal void Push(byte embeddingLevel, CharType overrideStatus, bool isolateStatus)
         {
 #if DEBUG
-            if (size == MaxElements)
+            if (_size == MaxElements)
                 throw (new InvalidOperationException("The stack is full."));
 #endif
 
-            if (peekTop != List.MaxIndex)
+            if (_peekTop != List.MaxIndex)
             {
-                ++peekTop;
+                ++_peekTop;
             }
             else
             {
-                if (peekList.next == null)
+                if (_peekList.next == null)
                 {
                     List list = new List();
-                    list.previous = peekList;
+                    list.previous = _peekList;
                     list.next = null;
 
-                    peekList.next = list;
-                    peekList = list;
+                    _peekList.next = list;
+                    _peekList = list;
                 }
                 else
                 {
-                    peekList = peekList.next;
+                    _peekList = _peekList.next;
                 }
 
-                peekTop = 0;
+                _peekTop = 0;
             }
-            ++size;
+            ++_size;
 
-            peekList.embeddingLevel[peekTop] = embeddingLevel;
-            peekList.overrideStatus[peekTop] = overrideStatus;
-            peekList.isolateStatus[peekTop] = isolateStatus;
+            _peekList.embeddingLevel[_peekTop] = embeddingLevel;
+            _peekList.overrideStatus[_peekTop] = overrideStatus;
+            _peekList.isolateStatus[_peekTop] = isolateStatus;
         }
 
         internal void Pop()
         {
 #if DEBUG
-            if (size == 0)
+            if (_size == 0)
                 throw (new InvalidOperationException("The stack is empty."));
 #endif
 
-            if (peekTop != 0)
+            if (_peekTop != 0)
             {
-                --peekTop;
+                --_peekTop;
             }
             else
             {
-                peekList = peekList.previous;
-                peekTop = List.MaxIndex;
+                _peekList = _peekList.previous;
+                _peekTop = List.MaxIndex;
             }
-            --size;
+            --_size;
         }
     }
 }

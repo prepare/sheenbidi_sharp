@@ -21,47 +21,47 @@ namespace SheenBidi
 {
     public class MirrorLocator : IEnumerable<MirrorAgent>
     {
-        private Line line;
+        private Line _line;
 
         private sealed class MirrorEnumerator : IEnumerator<MirrorAgent>
         {
-            private string text;
-            private List<Run> runs;
+            private string _text;
+            private List<Run> _runs;
 
-            private MirrorAgent agent;
-            private int runIndex;
-            private int charIndex;
+            private MirrorAgent _agent;
+            private int _runIndex;
+            private int _charIndex;
 
             internal MirrorEnumerator(Line line)
             {
-                text = line.Text;
-                runs = line.Runs;
+                _text = line.Text;
+                _runs = line.Runs;
 
-                agent = new MirrorAgent();
-                runIndex = 0;
-                charIndex = -1;
+                _agent = new MirrorAgent();
+                _runIndex = 0;
+                _charIndex = -1;
             }
 
             MirrorAgent IEnumerator<MirrorAgent>.Current
             {
-                get { return agent; }
+                get { return _agent; }
             }
 
             object IEnumerator.Current
             {
-                get { return agent; }
+                get { return _agent; }
             }
 
             bool IEnumerator.MoveNext()
             {
-                int runCount = runs.Count;
-                for (; runIndex < runCount; runIndex++)
+                int runCount = _runs.Count;
+                for (; _runIndex < runCount; _runIndex++)
                 {
-                    Run run = runs[runIndex];
+                    Run run = _runs[_runIndex];
 
                     if ((run.level & 1) != 0)
                     {
-                        int index = charIndex;
+                        int index = _charIndex;
                         int limit = run.offset + run.length;
 
                         if (index == -1)
@@ -69,20 +69,20 @@ namespace SheenBidi
 
                         for (; index < limit; index++)
                         {
-                            int mirror = PairingLookup.DetermineMirror(text[index]);
+                            int mirror = PairingLookup.DetermineMirror(_text[index]);
 
                             if (mirror != 0)
                             {
-                                charIndex = index + 1;
-                                agent.index = index;
-                                agent.mirror = mirror;
+                                _charIndex = index + 1;
+                                _agent.index = index;
+                                _agent.mirror = mirror;
 
                                 return true;
                             }
                         }
                     }
 
-                    charIndex = -1;
+                    _charIndex = -1;
                 }
 
                 return false;
@@ -104,12 +104,12 @@ namespace SheenBidi
 
         public void LoadLine(Line line)
         {
-            this.line = line;
+            _line = line;
         }
 
         public IEnumerator<MirrorAgent> GetEnumerator()
         {
-            return (new MirrorEnumerator(line));
+            return (new MirrorEnumerator(_line));
         }
 
         IEnumerator IEnumerable.GetEnumerator()

@@ -22,11 +22,11 @@ namespace SheenBidi
     {
         #region Variables
 
-        private string text;
-        private BaseDirection direction;
-        private byte baseLevel;
-        private CharType[] types;
-        private byte[] levels;
+        private string _text;
+        private BaseDirection _direction;
+        private byte _baseLevel;
+        private CharType[] _types;
+        private byte[] _levels;
 
         #endregion Variables
 
@@ -34,27 +34,27 @@ namespace SheenBidi
 
         public byte BaseLevel
         {
-            get { return baseLevel; }
+            get { return _baseLevel; }
         }
 
         public BaseDirection Direction
         {
-            get { return direction; }
+            get { return _direction; }
         }
 
         public string Text
         {
-            get { return text; }
+            get { return _text; }
         }
 
         internal CharType[] Types
         {
-            get { return types; }
+            get { return _types; }
         }
 
         internal byte[] Levels
         {
-            get { return levels; }
+            get { return _levels; }
         }
 
         #endregion Properties
@@ -66,10 +66,10 @@ namespace SheenBidi
             if (string.IsNullOrEmpty(text))
                 throw (new ArgumentException("Text is empty."));
 
-            this.text = text;
-            this.direction = direction;
-            this.types = new CharType[text.Length];
-            this.levels = new byte[text.Length];
+            _text = text;
+            _direction = direction;
+            _types = new CharType[text.Length];
+            _levels = new byte[text.Length];
 
             BidiChain chain = new BidiChain();
             DetermineTypes(chain);
@@ -89,12 +89,12 @@ namespace SheenBidi
         private void DetermineTypes(BidiChain chain)
         {
             CharType type = CharType.Nil;
-            int length = text.Length;
+            int length = _text.Length;
 
             for (int index = 0; index < length; index++)
             {
                 CharType priorType = type;
-                types[index] = type = CharTypeLookup.DetermineCharType(text[index]);
+                _types[index] = type = CharTypeLookup.DetermineCharType(_text[index]);
 
                 switch (type)
                 {
@@ -145,19 +145,19 @@ namespace SheenBidi
 
         private void DetermineBaseLevel(BidiChain chain)
         {
-            switch (direction)
+            switch (_direction)
             {
                 case BaseDirection.LeftToRight:
-                    baseLevel = 0;
+                    _baseLevel = 0;
                     break;
 
                 case BaseDirection.RightToLeft:
-                    baseLevel = 1;
+                    _baseLevel = 1;
                     break;
 
                 default:
-                    baseLevel = DetermineBaseLevel(chain.RollerLink, chain.RollerLink,
-                                                   (byte)(direction == BaseDirection.AutoLeftToRight ? 0 : 1),
+                    _baseLevel = DetermineBaseLevel(chain.RollerLink, chain.RollerLink,
+                                                   (byte)(_direction == BaseDirection.AutoLeftToRight ? 0 : 1),
                                                    false);
                     break;
             }
@@ -242,14 +242,14 @@ namespace SheenBidi
             StatusStack stack = new StatusStack();
             RunQueue runQueue = new RunQueue();
             IsolatingRun isolatingRun = new IsolatingRun();
-            isolatingRun.Text = text;
-            isolatingRun.ParagraphLevel = baseLevel;
+            isolatingRun.Text = _text;
+            isolatingRun.ParagraphLevel = _baseLevel;
 
             BidiLink roller = chain.RollerLink;
             BidiLink firstLink = null;
             BidiLink lastLink = null;
             BidiLink priorLink = roller;
-            byte priorLevel = baseLevel;
+            byte priorLevel = _baseLevel;
 
             CharType sor = CharType.Nil;
             CharType eor = CharType.Nil;
@@ -259,7 +259,7 @@ namespace SheenBidi
             int overEmbedding = 0;
             int validIsolate = 0;
 
-            stack.Push(baseLevel, CharType.ON, false);
+            stack.Push(_baseLevel, CharType.ON, false);
 
             for (BidiLink link = roller.Next; link != roller; link = link.Next)
             {
@@ -386,7 +386,7 @@ namespace SheenBidi
                         overEmbedding = 0;
                         validIsolate = 0;
 
-                        link.level = baseLevel;
+                        link.level = _baseLevel;
                         break;
 
                     case CharType.BN:
@@ -395,7 +395,7 @@ namespace SheenBidi
 
                     case CharType.Nil:
                         forceFinish = true;
-                        link.level = baseLevel;
+                        link.level = _baseLevel;
                         break;
                 }
 
@@ -410,7 +410,7 @@ namespace SheenBidi
 
                 if (sor == CharType.Nil)
                 {
-                    sor = Level.LevelToEmbeddingType(Math.Max(baseLevel, link.level));
+                    sor = Level.LevelToEmbeddingType(Math.Max(_baseLevel, link.level));
                     firstLink = link;
                     priorLevel = link.level;
                 }
@@ -466,7 +466,7 @@ namespace SheenBidi
         private void SaveLevels(BidiChain chain)
         {
             BidiLink roller = chain.RollerLink;
-            byte level = baseLevel;
+            byte level = _baseLevel;
             int index = 0;
 
             for (BidiLink link = roller.Next; link != roller; link = link.Next)
@@ -475,7 +475,7 @@ namespace SheenBidi
 
                 for (; index < offset; index++)
                 {
-                    levels[index] = level;
+                    _levels[index] = level;
                 }
 
                 level = link.level;

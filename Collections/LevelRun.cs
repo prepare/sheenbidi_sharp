@@ -40,15 +40,15 @@ namespace SheenBidi.Collections
         internal readonly BidiLink firstLink;
         internal readonly BidiLink lastLink;
         internal readonly BidiLink subsequentLink;
-        private Extrema extrema;
-        private Kind kind;
-        private LevelRun next;
+        private Extrema _extrema;
+        private Kind _kind;
+        private LevelRun _next;
 
         internal CharType SOR
         {
             get
             {
-                if ((extrema & Extrema.SOR_L) != 0)
+                if ((_extrema & Extrema.SOR_L) != 0)
                     return CharType.L;
 
                 return CharType.R;
@@ -59,7 +59,7 @@ namespace SheenBidi.Collections
         {
             get
             {
-                if ((extrema & Extrema.EOR_L) != 0)
+                if ((_extrema & Extrema.EOR_L) != 0)
                     return CharType.L;
 
                 return CharType.R;
@@ -73,32 +73,32 @@ namespace SheenBidi.Collections
 
         internal LevelRun Next
         {
-            get { return next; }
+            get { return _next; }
         }
 
         internal bool IsSimple
         {
-            get { return (kind == Kind.Simple); }
+            get { return (_kind == Kind.Simple); }
         }
 
         internal bool IsIsolateInitiator
         {
-            get { return ((kind & Kind.Isolate) != 0); }
+            get { return ((_kind & Kind.Isolate) != 0); }
         }
 
         internal bool IsIsolateTerminator
         {
-            get { return ((kind & Kind.Terminating) != 0); }
+            get { return ((_kind & Kind.Terminating) != 0); }
         }
 
         internal bool IsPartialIsolate
         {
-            get { return ((kind & Kind.Partial) != 0); }
+            get { return ((_kind & Kind.Partial) != 0); }
         }
 
         internal bool IsAttachedTerminator
         {
-            get { return ((kind & Kind.Attached) != 0); }
+            get { return ((_kind & Kind.Attached) != 0); }
         }
 
         internal LevelRun(BidiLink firstLink, BidiLink lastLink, CharType sor, CharType eor)
@@ -109,11 +109,11 @@ namespace SheenBidi.Collections
             switch (sor)
             {
                 case CharType.L:
-                    this.extrema |= Extrema.SOR_L;
+                    _extrema |= Extrema.SOR_L;
                     break;
 
                 case CharType.R:
-                    this.extrema |= Extrema.SOR_R;
+                    _extrema |= Extrema.SOR_R;
                     break;
 
 #if DEBUG
@@ -125,11 +125,11 @@ namespace SheenBidi.Collections
             switch (eor)
             {
                 case CharType.L:
-                    this.extrema |= Extrema.EOR_L;
+                    _extrema |= Extrema.EOR_L;
                     break;
 
                 case CharType.R:
-                    this.extrema |= Extrema.EOR_R;
+                    _extrema |= Extrema.EOR_R;
                     break;
 
 #if DEBUG
@@ -144,13 +144,13 @@ namespace SheenBidi.Collections
                 case CharType.LRI:
                 case CharType.RLI:
                 case CharType.FSI:
-                    this.kind |= Kind.Isolate | Kind.Partial;
+                    _kind |= Kind.Isolate | Kind.Partial;
                     break;
             }
 
             // A terminating run starts with a PDI.
             if (firstLink.type == CharType.PDI)
-                this.kind |= Kind.Terminating;
+                _kind |= Kind.Terminating;
 
             this.subsequentLink = lastLink.Next;
         }
@@ -172,12 +172,12 @@ namespace SheenBidi.Collections
 #endif
 
             if (levelRun.IsIsolateTerminator)
-                levelRun.kind |= Kind.Attached;
+                levelRun._kind |= Kind.Attached;
 
             if (this.IsIsolateInitiator)
-                kind &= ~Kind.Partial;
+                _kind &= ~Kind.Partial;
 
-            next = levelRun;
+            _next = levelRun;
         }
     }
 }

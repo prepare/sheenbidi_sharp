@@ -16,30 +16,30 @@ namespace SheenBidi.Collections
 {
     internal class BidiChain
     {
-        private BidiLink roller;
-        private BidiLink last;
+        private BidiLink _roller;
+        private BidiLink _last;
 
         internal BidiChain()
         {
-            this.roller = new BidiLink();
-            this.last = this.roller;
+            _roller = new BidiLink();
+            _last = _roller;
         }
 
         internal BidiLink RollerLink
         {
-            get { return roller; }
+            get { return _roller; }
         }
 
         internal BidiLink LastLink
         {
-            get { return last; }
+            get { return _last; }
         }
 
         internal void AddLink(BidiLink link)
         {
-            link.ReplaceNext(roller);
-            last.ReplaceNext(link);
-            last = link;
+            link.ReplaceNext(_roller);
+            _last.ReplaceNext(link);
+            _last = link;
         }
     }
 }

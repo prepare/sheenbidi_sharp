@@ -30,15 +30,15 @@ namespace SheenBidi.Collections
             internal List next;
         }
 
-        private List frontList;
-        private int frontTop;
+        private List _frontList;
+        private int _frontTop;
 
-        private List rearList;
-        private int rearTop;
+        private List _rearList;
+        private int _rearTop;
 
-        private CharType direction;
-        private bool shouldDequeue;
-        private int size;
+        private CharType _direction;
+        private bool _shouldDequeue;
+        private int _size;
 
         internal BracketQueue(CharType direction)
         {
@@ -47,56 +47,56 @@ namespace SheenBidi.Collections
 
         internal int Count
         {
-            get { return size; }
+            get { return _size; }
         }
 
         internal bool IsEmpty
         {
-            get { return (size == 0); }
+            get { return (_size == 0); }
         }
 
         internal bool ShouldDequeue
         {
-            get { return shouldDequeue; }
+            get { return _shouldDequeue; }
         }
 
         internal void Clear(CharType direction)
         {
-            this.frontList = new List();
-            this.frontTop = 0;
+            _frontList = new List();
+            _frontTop = 0;
 
-            this.rearList = frontList;
-            this.rearTop = -1;
+            _rearList = _frontList;
+            _rearTop = -1;
 
-            this.direction = direction;
-            this.shouldDequeue = false;
-            this.size = 0;
+            _direction = direction;
+            _shouldDequeue = false;
+            _size = 0;
         }
 
         internal void Enqueue(BracketPair bracketPair)
         {
-            if (rearTop == List.MaxIndex)
+            if (_rearTop == List.MaxIndex)
             {
-                List list = rearList.next;
+                List list = _rearList.next;
                 if (list == null)
                 {
                     list = new List();
-                    list.previous = rearList;
+                    list.previous = _rearList;
                     list.next = null;
 
-                    rearList.next = list;
+                    _rearList.next = list;
                 }
 
-                rearList = list;
-                rearTop = 0;
+                _rearList = list;
+                _rearTop = 0;
             }
             else
             {
-                ++rearTop;
+                ++_rearTop;
             }
 
-            rearList.bracketPairs[rearTop] = bracketPair;
-            ++size;
+            _rearList.bracketPairs[_rearTop] = bracketPair;
+            ++_size;
         }
 
         internal void Dequeue()
@@ -106,47 +106,47 @@ namespace SheenBidi.Collections
                 throw (new InvalidOperationException("The queue is empty."));
 #endif
 
-            if (frontTop == List.MaxIndex)
+            if (_frontTop == List.MaxIndex)
             {
-                if (frontList == rearList)
-                    rearTop = -1;
+                if (_frontList == _rearList)
+                    _rearTop = -1;
                 else
-                    frontList = frontList.next;
+                    _frontList = _frontList.next;
 
-                frontTop = 0;
+                _frontTop = 0;
             }
             else
             {
-                ++frontTop;
+                ++_frontTop;
             }
 
-            --size;
+            --_size;
         }
 
         internal BracketPair Peek()
         {
-            return frontList.bracketPairs[frontTop];
+            return _frontList.bracketPairs[_frontTop];
         }
 
         internal void SetStrongType(CharType strongType)
         {
-            List list = rearList;
-            int top = rearTop;
+            List list = _rearList;
+            int top = _rearTop;
 
             for (; ; )
             {
-                int limit = (list == frontList ? frontTop : 0);
+                int limit = (list == _frontList ? _frontTop : 0);
 
                 do
                 {
                     BracketPair pair = list.bracketPairs[top];
-                    if (pair.closingLink == null && pair.strongType != direction)
+                    if (pair.closingLink == null && pair.strongType != _direction)
                     {
                         pair.strongType = strongType;
                     }
                 } while (top-- > limit);
 
-                if (list == frontList)
+                if (list == _frontList)
                     break;
 
                 list = list.previous;
@@ -156,13 +156,13 @@ namespace SheenBidi.Collections
 
         internal void ClosePair(BidiLink closingLink, char bracket)
         {
-            List list = rearList;
-            int top = rearTop;
+            List list = _rearList;
+            int top = _rearTop;
 
             for (; ; )
             {
-                bool isFrontList = (list == frontList);
-                int limit = (isFrontList ? frontTop : 0);
+                bool isFrontList = (list == _frontList);
+                int limit = (isFrontList ? _frontTop : 0);
 
                 do
                 {
@@ -174,8 +174,8 @@ namespace SheenBidi.Collections
                         pair.closingLink = closingLink;
                         InvalidatePairs(list, top);
 
-                        if (isFrontList && top == frontTop)
-                            shouldDequeue = true;
+                        if (isFrontList && top == _frontTop)
+                            _shouldDequeue = true;
 
                         return;
                     }
@@ -193,7 +193,7 @@ namespace SheenBidi.Collections
         {
             do
             {
-                int limit = (list == rearList ? rearTop : List.MaxIndex);
+                int limit = (list == _rearList ? _rearTop : List.MaxIndex);
 
                 while (++top <= limit)
                 {

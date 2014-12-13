@@ -27,75 +27,75 @@ namespace SheenBidi.Collections
             internal List next;
         }
 
-        private List frontList;
-        private int frontTop;
+        private List _frontList;
+        private int _frontTop;
 
-        private List rearList;
-        private int rearTop;
+        private List _rearList;
+        private int _rearTop;
 
-        private List isolatingList;
-        private int isolatingTop;
+        private List _isolatingList;
+        private int _isolatingTop;
 
-        private int size;
+        private int _size;
 
         internal RunQueue()
         {
-            this.frontList = new List();
-            this.frontTop = 0;
+            _frontList = new List();
+            _frontTop = 0;
 
-            this.rearList = this.frontList;
-            this.rearTop = -1;
+            _rearList = _frontList;
+            _rearTop = -1;
 
-            this.isolatingList = null;
-            this.isolatingTop = -1;
+            _isolatingList = null;
+            _isolatingTop = -1;
 
-            this.size = 0;
+            _size = 0;
         }
 
         internal bool IsEmpty
         {
-            get { return (size == 0); }
+            get { return (_size == 0); }
         }
 
         internal int Count
         {
-            get { return size; }
+            get { return _size; }
         }
 
         internal bool ShouldDequeue
         {
-            get { return (isolatingTop == -1); }
+            get { return (_isolatingTop == -1); }
         }
 
         internal void Enqueue(LevelRun levelRun)
         {
-            if (rearTop == List.MaxIndex)
+            if (_rearTop == List.MaxIndex)
             {
-                List list = rearList.next;
+                List list = _rearList.next;
                 if (list == null)
                 {
                     list = new List();
-                    list.previous = rearList;
+                    list.previous = _rearList;
                     list.next = null;
 
-                    rearList.next = list;
+                    _rearList.next = list;
                 }
 
-                rearList = list;
-                rearTop = 0;
+                _rearList = list;
+                _rearTop = 0;
             }
             else
             {
-                ++rearTop;
+                ++_rearTop;
             }
 
-            ++size;
-            rearList.levelRuns[rearTop] = levelRun;
+            ++_size;
+            _rearList.levelRuns[_rearTop] = levelRun;
 
             // Complete the latest isolating run with this terminating run.
-            if (isolatingTop != -1 && levelRun.IsIsolateTerminator)
+            if (_isolatingTop != -1 && levelRun.IsIsolateTerminator)
             {
-                LevelRun incompleteRun = isolatingList.levelRuns[isolatingTop];
+                LevelRun incompleteRun = _isolatingList.levelRuns[_isolatingTop];
                 incompleteRun.AttachLevelRun(levelRun);
                 FindPreviousIncompleteRun();
             }
@@ -103,51 +103,51 @@ namespace SheenBidi.Collections
             // Save the location of the isolating run.
             if (levelRun.IsIsolateInitiator)
             {
-                isolatingList = rearList;
-                isolatingTop = rearTop;
+                _isolatingList = _rearList;
+                _isolatingTop = _rearTop;
             }
         }
 
         internal void Dequeue()
         {
-            if (frontTop == List.MaxIndex)
+            if (_frontTop == List.MaxIndex)
             {
-                if (frontList == rearList)
-                    rearTop = -1;
+                if (_frontList == _rearList)
+                    _rearTop = -1;
                 else
-                    frontList = frontList.next;
+                    _frontList = _frontList.next;
 
-                frontTop = 0;
+                _frontTop = 0;
             }
             else
             {
-                ++frontTop;
+                ++_frontTop;
             }
 
-            --size;
+            --_size;
         }
 
         internal LevelRun Peek()
         {
-            return frontList.levelRuns[frontTop];
+            return _frontList.levelRuns[_frontTop];
         }
 
         private void FindPreviousIncompleteRun()
         {
-            List list = isolatingList;
-            int top = isolatingTop;
+            List list = _isolatingList;
+            int top = _isolatingTop;
 
             do
             {
-                int limit = (list == frontList ? frontTop : 0);
+                int limit = (list == _frontList ? _frontTop : 0);
 
                 do
                 {
                     LevelRun levelRun = list.levelRuns[top];
                     if (levelRun.IsPartialIsolate)
                     {
-                        isolatingList = list;
-                        isolatingTop = top;
+                        _isolatingList = list;
+                        _isolatingTop = top;
                         return;
                     }
                 } while (top-- > limit);
@@ -156,8 +156,8 @@ namespace SheenBidi.Collections
                 top = List.MaxIndex;
             } while (list != null);
 
-            isolatingList = null;
-            isolatingTop = -1;
+            _isolatingList = null;
+            _isolatingTop = -1;
         }
     }
 }

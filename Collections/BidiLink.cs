@@ -22,29 +22,29 @@ namespace SheenBidi.Collections
         internal int length;
         internal CharType type;
         internal byte level;
-        private BidiLink next;
+        private BidiLink _next;
 
         internal BidiLink Next
         {
-            get { return next; }
+            get { return _next; }
         }
 
         internal void AbandonNext()
         {
-            this.next = this.next.next;
+            _next = _next._next;
         }
 
         internal void MergeNext()
         {
-            BidiLink firstNext = this.next;
-            BidiLink secondNext = firstNext.next;
-            this.next = secondNext;
-            this.length += firstNext.length;
+            BidiLink firstNext = _next;
+            BidiLink secondNext = firstNext._next;
+            _next = secondNext;
+            length += firstNext.length;
         }
 
         internal void ReplaceNext(BidiLink next)
         {
-            this.next = next;
+            _next = next;
         }
     }
 }

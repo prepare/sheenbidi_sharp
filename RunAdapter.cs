@@ -20,42 +20,42 @@ namespace SheenBidi
 {
     public class RunAdapter : IEnumerable<RunAgent>
     {
-        private Line line;
+        private Line _line;
 
         private sealed class RunEnumerator : IEnumerator<RunAgent>
         {
-            private RunAgent agent;
+            private RunAgent _agent;
 
-            private List<Run> runs;
-            private int index;
+            private List<Run> _runs;
+            private int _index;
 
             internal RunEnumerator(Line line)
             {
-                agent = new RunAgent();
+                _agent = new RunAgent();
 
-                runs = line.Runs;
-                index = 0;
+                _runs = line.Runs;
+                _index = 0;
             }
 
             RunAgent IEnumerator<RunAgent>.Current
             {
-                get { return agent; }
+                get { return _agent; }
             }
 
             object IEnumerator.Current
             {
-                get { return agent; }
+                get { return _agent; }
             }
 
             bool IEnumerator.MoveNext()
             {
-                if (index < runs.Count)
+                if (_index < _runs.Count)
                 {
-                    Run run = runs[index];
-                    agent.offset = run.offset;
-                    agent.length = run.length;
-                    agent.level = run.level;
-                    ++index;
+                    Run run = _runs[_index];
+                    _agent.offset = run.offset;
+                    _agent.length = run.length;
+                    _agent.level = run.level;
+                    ++_index;
 
                     return true;
                 }
@@ -79,12 +79,12 @@ namespace SheenBidi
 
         public void LoadLine(Line line)
         {
-            this.line = line;
+            _line = line;
         }
 
         public IEnumerator<RunAgent> GetEnumerator()
         {
-            return (new RunEnumerator(line));
+            return (new RunEnumerator(_line));
         }
 
         IEnumerator IEnumerable.GetEnumerator()
