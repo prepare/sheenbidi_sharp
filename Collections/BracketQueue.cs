@@ -24,11 +24,13 @@ namespace SheenBidi.Collections
             public const int Length = 8;
             public const int MaxIndex = (Length - 1);
 
-            public readonly BracketPair[] bracketPairs = new BracketPair[Length];
+            public readonly BracketPair[] Pairs = new BracketPair[Length];
 
             public List previous;
             public List next;
         }
+
+        private readonly List _firstList = new List();
 
         private List _frontList;
         private int _frontTop;
@@ -39,11 +41,6 @@ namespace SheenBidi.Collections
         private CharType _direction;
         private bool _shouldDequeue;
         private int _size;
-
-        public BracketQueue(CharType direction)
-        {
-            Clear(direction);
-        }
 
         public int Count
         {
@@ -60,9 +57,14 @@ namespace SheenBidi.Collections
             get { return _shouldDequeue; }
         }
 
+        public BracketQueue(CharType direction)
+        {
+            Clear(direction);
+        }
+
         public void Clear(CharType direction)
         {
-            _frontList = new List();
+            _frontList = _firstList;
             _frontTop = 0;
 
             _rearList = _frontList;
@@ -95,7 +97,7 @@ namespace SheenBidi.Collections
                 ++_rearTop;
             }
 
-            _rearList.bracketPairs[_rearTop] = bracketPair;
+            _rearList.Pairs[_rearTop] = bracketPair;
             ++_size;
         }
 
@@ -125,7 +127,7 @@ namespace SheenBidi.Collections
 
         public BracketPair Peek()
         {
-            return _frontList.bracketPairs[_frontTop];
+            return _frontList.Pairs[_frontTop];
         }
 
         public void SetStrongType(CharType strongType)
@@ -139,10 +141,10 @@ namespace SheenBidi.Collections
 
                 do
                 {
-                    BracketPair pair = list.bracketPairs[top];
-                    if (pair.closingLink == null && pair.strongType != _direction)
+                    BracketPair pair = list.Pairs[top];
+                    if (pair.closingLink == null && pair.innerStrongType != _direction)
                     {
-                        pair.strongType = strongType;
+                        pair.innerStrongType = strongType;
                     }
                 } while (top-- > limit);
 
@@ -154,7 +156,7 @@ namespace SheenBidi.Collections
             };
         }
 
-        public void ClosePair(BidiLink closingLink, char bracket)
+        public void ClosePair(BidiLink closingLink, int bracket)
         {
             List list = _rearList;
             int top = _rearTop;
@@ -166,10 +168,10 @@ namespace SheenBidi.Collections
 
                 do
                 {
-                    BracketPair pair = list.bracketPairs[top];
+                    BracketPair pair = list.Pairs[top];
                     if (pair.openingLink != null
                         && pair.closingLink == null
-                        && pair.bracket == bracket)
+                        && pair.bracketUnicode == bracket)
                     {
                         pair.closingLink = closingLink;
                         InvalidatePairs(list, top);
@@ -197,7 +199,7 @@ namespace SheenBidi.Collections
 
                 while (++top <= limit)
                 {
-                    BracketPair pair = list.bracketPairs[top];
+                    BracketPair pair = list.Pairs[top];
                     if (pair.openingLink != null
                         && pair.closingLink == null)
                     {

@@ -37,12 +37,13 @@ namespace SheenBidi.Collections
             EOR_R = 8,
         }
 
-        public readonly BidiLink firstLink;
-        public readonly BidiLink lastLink;
-        public readonly BidiLink subsequentLink;
         private Extrema _extrema;
         private Kind _kind;
         private LevelRun _next;
+
+        public readonly BidiLink FirstLink;
+        public readonly BidiLink LastLink;
+        public readonly BidiLink SubsequentLink;
 
         public CharType SOR
         {
@@ -68,7 +69,7 @@ namespace SheenBidi.Collections
 
         public byte Level
         {
-            get { return firstLink.level; }
+            get { return this.FirstLink.level; }
         }
 
         public LevelRun Next
@@ -103,8 +104,8 @@ namespace SheenBidi.Collections
 
         public LevelRun(BidiLink firstLink, BidiLink lastLink, CharType sor, CharType eor)
         {
-            this.firstLink = firstLink;
-            this.lastLink = lastLink;
+            this.FirstLink = firstLink;
+            this.LastLink = lastLink;
 
             switch (sor)
             {
@@ -152,7 +153,7 @@ namespace SheenBidi.Collections
             if (firstLink.type == CharType.PDI)
                 _kind |= Kind.Terminating;
 
-            this.subsequentLink = lastLink.Next;
+            this.SubsequentLink = lastLink.Next;
         }
 
         public void AttachLevelRun(LevelRun levelRun)

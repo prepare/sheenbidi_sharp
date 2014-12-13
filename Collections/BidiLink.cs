@@ -18,11 +18,12 @@ namespace SheenBidi.Collections
 {
     internal class BidiLink
     {
+        private BidiLink _next;
+
         public int offset;
         public int length;
         public CharType type;
         public byte level;
-        private BidiLink _next;
 
         public BidiLink Next
         {

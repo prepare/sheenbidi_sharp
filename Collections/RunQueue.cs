@@ -12,6 +12,8 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
+using SheenBidi.Data;
+
 namespace SheenBidi.Collections
 {
     internal class RunQueue
@@ -21,7 +23,7 @@ namespace SheenBidi.Collections
             public const int Length = 8;
             public const int MaxIndex = (Length - 1);
 
-            public readonly LevelRun[] levelRuns = new LevelRun[Length];
+            public readonly LevelRun[] Runs = new LevelRun[Length];
 
             public List previous;
             public List next;
@@ -90,12 +92,12 @@ namespace SheenBidi.Collections
             }
 
             ++_size;
-            _rearList.levelRuns[_rearTop] = levelRun;
+            _rearList.Runs[_rearTop] = levelRun;
 
             // Complete the latest isolating run with this terminating run.
             if (_isolatingTop != -1 && levelRun.IsIsolateTerminator)
             {
-                LevelRun incompleteRun = _isolatingList.levelRuns[_isolatingTop];
+                LevelRun incompleteRun = _isolatingList.Runs[_isolatingTop];
                 incompleteRun.AttachLevelRun(levelRun);
                 FindPreviousIncompleteRun();
             }
@@ -129,7 +131,7 @@ namespace SheenBidi.Collections
 
         public LevelRun Peek()
         {
-            return _frontList.levelRuns[_frontTop];
+            return _frontList.Runs[_frontTop];
         }
 
         private void FindPreviousIncompleteRun()
@@ -143,7 +145,7 @@ namespace SheenBidi.Collections
 
                 do
                 {
-                    LevelRun levelRun = list.levelRuns[top];
+                    LevelRun levelRun = list.Runs[top];
                     if (levelRun.IsPartialIsolate)
                     {
                         _isolatingList = list;

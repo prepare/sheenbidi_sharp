@@ -19,12 +19,6 @@ namespace SheenBidi.Collections
         private BidiLink _roller;
         private BidiLink _last;
 
-        public BidiChain()
-        {
-            _roller = new BidiLink();
-            _last = _roller;
-        }
-
         public BidiLink RollerLink
         {
             get { return _roller; }
@@ -33,6 +27,12 @@ namespace SheenBidi.Collections
         public BidiLink LastLink
         {
             get { return _last; }
+        }
+
+        public BidiChain()
+        {
+            _roller = new BidiLink();
+            _last = _roller;
         }
 
         public void AddLink(BidiLink link)

@@ -24,9 +24,9 @@ namespace SheenBidi.Collections
             public const int Length = 16;
             public const int MaxIndex = (Length - 1);
 
-            public byte[] embeddingLevel = new byte[Length];
-            public CharType[] overrideStatus = new CharType[Length];
-            public bool[] isolateStatus = new bool[Length];
+            public readonly byte[] EmbeddingLevel = new byte[Length];
+            public readonly CharType[] OverrideStatus = new CharType[Length];
+            public readonly bool[] IsolateStatus = new bool[Length];
 
             public List previous;
             public List next;
@@ -63,17 +63,17 @@ namespace SheenBidi.Collections
 
         public byte EmbeddingLevel
         {
-            get { return _peekList.embeddingLevel[_peekTop]; }
+            get { return _peekList.EmbeddingLevel[_peekTop]; }
         }
 
         public CharType OverrideStatus
         {
-            get { return _peekList.overrideStatus[_peekTop]; }
+            get { return _peekList.OverrideStatus[_peekTop]; }
         }
 
         public bool IsolateStatus
         {
-            get { return _peekList.isolateStatus[_peekTop]; }
+            get { return _peekList.IsolateStatus[_peekTop]; }
         }
 
         public byte EvenLevel
@@ -122,9 +122,9 @@ namespace SheenBidi.Collections
             }
             ++_size;
 
-            _peekList.embeddingLevel[_peekTop] = embeddingLevel;
-            _peekList.overrideStatus[_peekTop] = overrideStatus;
-            _peekList.isolateStatus[_peekTop] = isolateStatus;
+            _peekList.EmbeddingLevel[_peekTop] = embeddingLevel;
+            _peekList.OverrideStatus[_peekTop] = overrideStatus;
+            _peekList.IsolateStatus[_peekTop] = isolateStatus;
         }
 
         public void Pop()

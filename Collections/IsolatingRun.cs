@@ -19,11 +19,13 @@ namespace SheenBidi.Collections
 {
     internal class IsolatingRun
     {
+        #region Variables
+
         private BracketQueue _bracketQueue;
 
         private BidiLink _roller;
-        private LevelRun _baseLevelRun;
-        private LevelRun _lastLevelRun;
+        private LevelRun _baseRun;
+        private LevelRun _lastRun;
 
         private CharType _sos;
         private CharType _eos;
@@ -31,6 +33,10 @@ namespace SheenBidi.Collections
 
         private string _text;
         private byte _paragraphLevel;
+        
+        #endregion
+
+        #region Properties
 
         public string Text
         {
@@ -46,9 +52,13 @@ namespace SheenBidi.Collections
 
         public LevelRun BaseLevelRun
         {
-            get { return _baseLevelRun; }
-            set { _baseLevelRun = value; }
+            get { return _baseRun; }
+            set { _baseRun = value; }
         }
+
+        #endregion
+
+        #region Constructor
 
         public IsolatingRun()
         {
@@ -56,12 +66,16 @@ namespace SheenBidi.Collections
             _roller = new BidiLink();
         }
 
+        #endregion
+
+        #region Resolve Isolating Run
+
         public void Resolve()
         {
             // Attach level run links to form isolating run.
             AttachLevelRunLinks();
             // Save last subsequent link.
-            BidiLink subsequentLink = _lastLevelRun.subsequentLink;
+            BidiLink subsequentLink = _lastRun.SubsequentLink;
 
             // Rules W1-W7
             BidiLink finalLink = ResolveWeakTypes();
@@ -78,23 +92,27 @@ namespace SheenBidi.Collections
             finalLink.ReplaceNext(subsequentLink);
         }
 
+        #endregion
+
+        #region Form/Deform Isolating Run
+
         private void AttachLevelRunLinks()
         {
             LevelRun current;
             LevelRun next;
 
-            _roller.ReplaceNext(_baseLevelRun.firstLink);
+            _roller.ReplaceNext(_baseRun.FirstLink);
 
-            for (current = _baseLevelRun; (next = current.Next) != null; current = next)
+            for (current = _baseRun; (next = current.Next) != null; current = next)
             {
-                current.lastLink.ReplaceNext(next.firstLink);
+                current.LastLink.ReplaceNext(next.FirstLink);
             }
-            current.lastLink.ReplaceNext(_roller);
+            current.LastLink.ReplaceNext(_roller);
 
-            _lastLevelRun = current;
-            _level = _baseLevelRun.Level;
-            _sos = _baseLevelRun.SOR;
-            _eos = (!_baseLevelRun.IsPartialIsolate
+            _lastRun = current;
+            _level = _baseRun.Level;
+            _sos = _baseRun.SOR;
+            _eos = (!_baseRun.IsPartialIsolate
                     ? current.EOR
                     : Level.MakeExtremeType(_paragraphLevel, _level)
                    );
@@ -102,11 +120,13 @@ namespace SheenBidi.Collections
 
         private void AttachOriginalLinks()
         {
-            for (LevelRun current = _baseLevelRun; current != null; current = current.Next)
+            for (LevelRun current = _baseRun; current != null; current = current.Next)
             {
-                current.lastLink.ReplaceNext(current.subsequentLink);
+                current.LastLink.ReplaceNext(current.SubsequentLink);
             };
         }
+
+        #endregion
 
         #region Resolve Weak Types
 
@@ -263,7 +283,7 @@ namespace SheenBidi.Collections
 
         private void ResolveBrackets()
         {
-            BidiLink priorStrongLink = null;
+            BidiLink strongLink = null;
             _bracketQueue.Clear(Level.MakeEmbeddingType(_level));
 
             for (BidiLink link = _roller.Next; link != _roller; link = link.Next)
@@ -276,16 +296,16 @@ namespace SheenBidi.Collections
                         BracketType bracketType;
 
                         char ch = _text[link.offset];
-                        char bracketValue = (char)PairingLookup.DetermineBracketPair((int)ch, out bracketType);
+                        int bracketValue = PairingLookup.DetermineBracketPair((int)ch, out bracketType);
 
                         switch (bracketType)
                         {
                             case BracketType.Open:
                                 BracketPair bracketPair = new BracketPair()
                                 {
-                                    priorStrongLink = priorStrongLink,
+                                    bracketUnicode = ch,
                                     openingLink = link,
-                                    bracket = ch
+                                    priorStrongLink = strongLink
                                 };
                                 _bracketQueue.Enqueue(bracketPair);
                                 break;
@@ -314,7 +334,7 @@ namespace SheenBidi.Collections
 
                             _bracketQueue.SetStrongType(type);
                         }
-                        priorStrongLink = link;
+                        strongLink = link;
                         break;
                 }
             }
@@ -333,7 +353,7 @@ namespace SheenBidi.Collections
 
                 if (pair.IsComplete)
                 {
-                    CharType innerStrongType = pair.strongType;
+                    CharType innerStrongType = pair.innerStrongType;
                     CharType pairType;
 
                     // Rule: N0.b
