@@ -51,7 +51,7 @@
     <Compile Include="Internal\PairingLookup.cs" />
     <Compile Include="Internal\Level.cs" />
     <Compile Include="Line.cs" />
-    <Compile Include="MirrorAdapter.cs" />
+    <Compile Include="MirrorLocator.cs" />
     <Compile Include="MirrorAgent.cs" />
     <Compile Include="Paragraph.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
